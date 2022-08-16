@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -31,6 +28,12 @@ public class PeopleController {
     @Autowired
     private PeopleService peopleService;
 
+    /**
+     * @param name
+     * @param page
+     * @param size
+     * @return
+     */
     @GetMapping("/people")
     public ResponseEntity<HttpResponse> getContactList(@RequestParam Optional<String> name, @RequestParam Optional<Integer> page, Optional<Integer> size) {
 
@@ -47,6 +50,27 @@ public class PeopleController {
                         .data(map)
                         .build()
         );
+    }
+
+    /**
+     * @param people
+     * @return
+     */
+    @PostMapping("/people")
+    public ResponseEntity<People> addNewContact(@RequestBody People people) {
+        People people1 = peopleService.saveContact(people);
+        return ResponseEntity.ok().body(people1);
+    }
+
+    /**
+     * @param people
+     * @param id
+     * @return
+     */
+    @PutMapping("/people/{id}")
+    public ResponseEntity<People> updateContact(@RequestBody People people, @PathVariable("id") long id) {
+        People people_new = peopleService.updateContact(people, id);
+        return ResponseEntity.ok().body(people_new);
     }
 
 //    @GetMapping("/people")
